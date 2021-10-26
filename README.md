@@ -2,4 +2,5 @@
 ## width search
 
 Дерево:
+
 ![graph](./graph.png)
