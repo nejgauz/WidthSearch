@@ -31,19 +31,18 @@ $nodes = [
 ];
 // создаем объекты графа
 foreach ($nodes as $node) {
-    $children = [];
+    ${"$node[1]"} = new Node($node[1]);
+
     foreach ($node[0] as $child) {
-        $children[] = ${"$child"};
+        ${"$child"}->setParent(${"$node[1]"});
+        ${"$node[1]"}->setChild(${"$child"});
     }
-    ${"$node[1]"} = new Node($children, $node[1]);
 }
 
-$needle = 's';
+$needle = "x";
 $haystack = new ArrayIterator([$a]);
 $found = false;
-
 foreach ($haystack as $node) {
-    echo "Current node: " . $node->getName() . PHP_EOL;
     if ($node->getName() === $needle) {
         $found = true;
         break;
@@ -53,5 +52,19 @@ foreach ($haystack as $node) {
     }
 }
 
+$path = '';
+if ($found) {
+    $node = ${"$needle"};
+    $needleName = $node->getName();
+    while ($node->getParent() instanceof Node) {
+        $parent = $node->getParent();
+        $node = $parent;
+        $path = $parent->getName() . "->" . $path;
+    }
+    $path .= $needleName;
+}
 
-echo "The value $needle " . ($found ? "is in the tree" : "hasn't been found");
+echo "The value \"$needle\" " . ($found ? "is in the tree." : "hasn't been found.") . PHP_EOL;
+if ($found) {
+    echo "The path to the value: $path";
+}
