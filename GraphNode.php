@@ -35,4 +35,9 @@ class GraphNode
             }
         );
     }
+
+    public function getChildren(): array
+    {
+        return $this->children;
+    }
 }

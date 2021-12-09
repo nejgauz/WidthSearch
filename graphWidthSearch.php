@@ -4,7 +4,7 @@ require_once 'GraphNode.php';
 
 $graphStructure = [
     [
-        'nodeName' => 'Root',
+        'nodeName' => 'root',
         'children' => [
             'a' => 8,
             'c' => 10
@@ -33,7 +33,7 @@ $graphStructure = [
         'nodeName' => 'e',
         'children' => [
             'd'      => 7,
-            'Target' => 8
+            'target' => 8
         ]
     ],
     [
@@ -46,7 +46,7 @@ $graphStructure = [
         'nodeName' => 'g',
         'children' => [
             'c'      => 15,
-            'Target' => 6
+            'target' => 6
         ]
     ]
 ];
@@ -59,8 +59,34 @@ foreach ($graphStructure as $item) {
 foreach ($graphStructure as $item) {
     $name = $item['nodeName'];
     foreach ($item['children'] as $child => $distance) {
-        ${"$name"}->setChild($child, $distance);
+        ${"$name"}->setChild(${"$child"}, $distance);
     }
 }
 
+$targetName = 'target';
+$haystack = new ArrayIterator([$root]);
+$visitedNodes = [];
+$found = false;
+$currentChildNumber = 0;
+foreach ($haystack as $graphNode) {
+    if (isset($visitedNodes[$graphNode->getName()])) {
+        continue;
+    }
+
+    if ($graphNode->getName() === $targetName) {
+        $found = true;
+        break;
+    }
+
+    $visitedNodes[$graphNode->getName()] = true;
+
+    if (empty($graphNode->getChildren()) || !isset($graphNode->getChildren()[$currentChildNumber])) {
+        $found = false;
+        break;
+    }
+
+    $haystack[] = $graphNode->getChildren()[$currentChildNumber];
+}
+
+echo "Target " . ($found ? 'is found in the graph.' : 'is not found in the graph.');
 
